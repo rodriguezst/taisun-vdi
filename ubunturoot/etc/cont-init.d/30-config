@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv bash
+
+# Give abc a passwordless sudo shell
+sed -e 's/%sudo ALL=(ALL:ALL) ALL/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' \
+  -i /etc/sudoers
+sed -e 's/%sudo ALL=(ALL:ALL) ALL/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' \
+  -i /etc/sudoers
+
+# default file copies first run
+[[ ! -d /config/.config ]] && \
+        cp -ax /defaults/config /config/.config && \
+        cp /defaults/xscreensaver /config/.xscreensaver && \
+        cp /defaults/bashrc /config/.bashrc && \
+        chsh abc -s /bin/bash
+
+# permissions
+PERM=$(stat -c '%U' /config/.config)
+[[ "${PERM}" != "abc" ]] && \
+        chown -R abc:abc /config
